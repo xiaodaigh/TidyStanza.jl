@@ -1,7 +1,7 @@
 # Weave readme
 using Pkg
-cd("c:/git/Dply/")
-Pkg.activate("c:/git/Dply/readme-env")
+cd("c:/git/Hadleyverse/")
+Pkg.activate("c:/git/Hadleyverse/readme-env")
 
 using Weave
 

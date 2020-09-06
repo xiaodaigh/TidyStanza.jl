@@ -6,18 +6,38 @@ Currently, only `dplyr::across` is implemented
 
 ### Examples:
 
-#### `Dply.Across` and `Dply.Where`
+#### `Hadleyverse.Across` and `Hadleyverse.Where`
 
-* `Dply.Across` and `Dply.across` are synonyms and have the same API as `dplyr::across`
-* `Dply.Where` and `Dply.where` are synonyms and have the same API as `dplyr::across(where(...), ...)`
+* `Hadleyverse.Across` and `Hadleyverse.across` are synonyms and have the same API as `dplyr::across`
+* `Hadleyverse.Where` and `Hadleyverse.where` are synonyms and have the same API as `dplyr::across(where(...), ...)`
 
-By default, they are NOT exported, and the recommended way is to use `Dply.across` and `Dply.where`
-to refer to them. However, in the examples below, for brevity, I have imported `across` and `where`
+By default, they are NOT exported, and the recommended way is to use `Hadleyverse.across` and `Hadleyverse.where`
+to refer to them.
+
+````julia
+
+import Hadleyverse
+const hv = Hadleyverse
+
+hv.across
+hv.where
+````
+
+
+````
+where (generic function with 1 method)
+````
+
+
+
+
+
+However, in the examples below, for brevity, I have imported `across` and `where`
 directly into the namespace.
 
 ````julia
 
-using Dply: across, where
+using Hadleyverse: across, where
 
 
 ### load some helper packages

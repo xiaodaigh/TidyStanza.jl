@@ -1,4 +1,4 @@
-module Dply
+module Hadleyverse
 
 export combine
 

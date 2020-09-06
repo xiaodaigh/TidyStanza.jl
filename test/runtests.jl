@@ -1,4 +1,4 @@
-using Dply
+using Hadleyverse
 using Test
 
 @testset "Dply.jl" begin
