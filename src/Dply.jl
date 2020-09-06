@@ -45,7 +45,7 @@ function DataFrames.transform(df::AbstractDataFrame, da::Across)
     end
 end
 
-function DataFrames.combine(df, da::Across)
+function dplyr_across_in_combines(df, da)
     input_cols = get_input_cols(df, da.innames)
 
     if isnothing(da.outnames)
@@ -67,5 +67,9 @@ function DataFrames.combine(df, da::Across)
     end
 end
 
+DataFrames.combine(df, da::Across) = dplyr_across_in_combines(df, da)
+
+DataFrames.combine(df::T, da::Across) where T <: AbstractDataFrame =
+    dplyr_across_in_combines(df, da)
 
 end

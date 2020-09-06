@@ -20,20 +20,6 @@ filter(startswith("Sepal"), names(iris))
   groupby(_, :Species) |>
   combine(_, filter(startswith("Sepal"), names(_)) .=> mean)
 
-using Dply: across, where
-
-@pipe iris |>
-  groupby(_, :Species) |>
-  combine(_, across(where(col->eltype(col) <: Number), mean))
-
-
-gdf = @pipe iris |>
-  groupby(_, :Species)
-
-
-parent(gdf)
-
-
 # R"""
 # iris %>%
     # as_tibble() %>%
