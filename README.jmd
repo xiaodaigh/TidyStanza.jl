@@ -1,6 +1,6 @@
-## Dply
+## Hadleyverse
 
-Trying to implement {dplyr} API in Julia
+Trying to implement {tidyverse}, including {dplyr}, APIs in Julia
 
 Currently, only `dplyr::across` is implemented
 
@@ -8,8 +8,8 @@ Currently, only `dplyr::across` is implemented
 
 #### `Dply.Across` and `Dply.Where`
 
-`Dply.Across` and `Dply.across` are synonyms and have the same API as `dplyr::across`
-`Dply.Where` and `Dply.where` are synonyms and have the same API as `dplyr::across(where(...), ...)`
+* `Dply.Across` and `Dply.across` are synonyms and have the same API as `dplyr::across`
+* `Dply.Where` and `Dply.where` are synonyms and have the same API as `dplyr::across(where(...), ...)`
 
 By default, they are NOT exported, and the recommended way is to use `Dply.across` and `Dply.where`
 to refer to them. However, in the examples below, for brevity, I have imported `across` and `where`
