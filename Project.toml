@@ -11,7 +11,6 @@ DataFrames = "0.21"
 julia = "1"
 
 [extras]
-RDatasets = "ce6b1742-4840-55fa-b093-852dadbb1d8b"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
