@@ -1,0 +1,115 @@
+## Dply
+
+Trying to implement {dplyr} API in Julia
+
+Currently, only `dplyr::across` is implemented
+
+### Examples:
+
+#### `Dply.Across` and `Dply.Where`
+
+`Dply.Across` and `Dply.across` are synonyms and have the same API as `dplyr::across`
+`Dply.Where` and `Dply.where` are synonyms and have the same API as `dplyr::across(where(...), ...)`
+
+By default, they are NOT exported, and the recommended way is to use `Dply.across` and `Dply.where`
+to refer to them. However, in the examples below, for brevity, I have imported `across` and `where`
+directly into the namespace.
+
+```julia
+using Dply: across, where
+
+
+### load some helper packages
+using DataFrames
+using Statistics # for using mean
+using Pipe: @pipe # for @pipe macro
+using RDatasets # for iris dataset
+
+iris = dataset("datasets", "iris");
+
+# a glimpse of the data
+first(iris, 8)
+```
+
+```julia
+# R"""
+# iris %>%
+#   group_by(Species) %>%
+#   summarise(across(starts_with("Sepal"), mean))
+# """
+
+@pipe iris |>
+  groupby(_, :Species) |>
+  combine(_, across(startswith("Sepal"), mean))
+```
+
+```julia
+# R"""
+# iris %>%
+    # as_tibble() %>%
+    # mutate(across(where(is.factor), as.character))
+# """
+
+# define a convenience function for checking if column is categorical
+iscatarray(arr) = typeof(arr) <: CategoricalArray
+
+@pipe iris |>
+  transform(_, across(where(iscatarray), Vector{String})) |>
+  first(_, 8)
+
+@pipe iris |>
+  transform(_, across(where(iscatarray), col->string.(col))) |>
+  first(_, 8)
+```
+
+```julia
+# A purrr-style formula
+# iris %>%
+#   group_by(Species) %>%
+#   summarise(across(starts_with("Sepal"), ~mean(.x, na.rm = TRUE)))
+@pipe iris |>
+  groupby(_, :Species) |>
+  combine(_, across(startswith("Sepal"), x->mean(x |> skipmissing)))
+```
+
+```julia
+# A named list of functions
+# iris %>%
+#   group_by(Species) %>%
+#   summarise(across(starts_with("Sepal"), list(mean = mean, sd = sd)))
+
+@pipe iris |>
+    groupby(_, :Species) |>
+    combine(_, across(startswith("Sepal"), (mean, std)))
+```
+
+```julia
+# Use the .names argument to control the output names
+# iris %>%
+#   group_by(Species) %>%
+#   summarise(across(starts_with("Sepal"), mean, .names = "mean_{col}"))
+
+@pipe iris |>
+    groupby(_, :Species) |>
+    combine(_, across(startswith("Sepal"), mean; names = "mean_{col}"))
+```
+
+```julia
+# iris %>%
+#   group_by(Species) %>%
+#   summarise(across(starts_with("Sepal"), list(mean = mean, sd = sd), .names = "{col}_{fn}"))
+
+@pipe iris |>
+    groupby(_, :Species) |>
+    combine(_, across(startswith("Sepal"), (mean = mean, std = std); names = "{col}_{fn}"))
+```
+
+```julia
+# iris %>%
+#   group_by(Species) %>%
+#   summarise(across(starts_with("Sepal"), list(mean, sd), .names = "{col}.fn{fn}"))
+
+@pipe iris |>
+    groupby(_, :Species) |>
+    combine(_, across(startswith("Sepal"), (mean, std); names = "{col}_fn{fn}"))
+```
