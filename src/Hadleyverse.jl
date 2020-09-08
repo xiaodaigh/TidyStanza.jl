@@ -1,10 +1,12 @@
 module Hadleyverse
 
-export combine
+export combine, pivot_wider
 
 include("Across.jl") # defines the Across type
 
 using DataFrames
+
+include("Pivot.jl") # defines pivoting functions
 
 import DataFrames: combine
 
