@@ -54,12 +54,18 @@ pivot_wider(df, names_from = [:cname1,:cname2], values_from = [:val1,:val2])
 │ 2   │ 2     │ 5     │ 8     │ ce_val1_2 │ cf_val1_2 │ de_val1_2 │ df_val1_2 │ ce_val2_2 │ cf_val2_2 │ de_val2_2 │ df_val2_2 │
 │ 3   │ 3     │ 6     │ 9     │ ce_val1_3 │ cf_val1_3 │ de_val1_3 │ df_val1_3 │ ce_val2_3 │ cf_val2_3 │ de_val2_3 │ df_val2_3 │
 """
-function pivot_wider(df::AbstractDataFrame; names_from =  nothing, values_from = nothing)
-    id_cols = setdiff(Symbol.(names(df)), names_from,values_from)
-    dfa = select(df,:)
-    dfa[!,:cname_temp] = [join(Array(r),"_") for r in eachrow(select(dfa,names_from))]
+function pivot_wider(df::AbstractDataFrame; names_from = nothing, values_from = nothing)
+ if names_from isa Symbol
+    names_from = [names_from]
+ end
+ if values_from isa Symbol
+    values_from = [values_from]
+ end
+    id_cols = setdiff(Symbol.(names(df)), names_from, values_from)
+    dfa = select(df, :)
+    dfa[!,:cname_temp] = [join(Array(r), "_") for r in eachrow(select(dfa, names_from))]
     dfb = unstack_name.(Ref(dfa), Ref(id_cols), Ref(:cname_temp), values_from)
-    id1 = select(dfb[1],id_cols)
+    id1 = select(dfb[1], id_cols)
     select!.(dfb, Ref(Not(id_cols)))
     hcat(id1, reduce((df1, df2) -> hcat(df1, df2, makeunique = true), dfb))
 end
