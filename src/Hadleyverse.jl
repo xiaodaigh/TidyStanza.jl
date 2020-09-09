@@ -8,6 +8,9 @@ using DataFrames
 
 import DataFrames: combine
 
+everything() = true
+returntrue() = true
+
 """
     A function to get input col names from Across.innames
 """
@@ -28,20 +31,18 @@ function DataFrames.transform(df::AbstractDataFrame, da::Across)
 
     if isnothing(da.outnames)
         pairs = [col => fn for col in input_cols, fn in da.fn]
-        return transform(df,  pairs...)
+        return transform(df, pairs...)
     else
         outcols = [
-            replace(
-                replace(da.outnames, "{col}" => col),
-                    "{fn}" => string(fn)
-                )
-            for col in input_cols, fn in keys(da.fn)]
+            replace(replace(da.outnames, "{col}" => col), "{fn}" => string(fn))
+            for col in input_cols, fn in keys(da.fn)
+        ]
 
         in_fn_out_iterator = zip(Iterators.product(input_cols, da.fn), outcols)
 
         pairs = [col => fn => outcol for ((col, fn), outcol) in in_fn_out_iterator]
 
-        return transform(df,  pairs...)
+        return transform(df, pairs...)
     end
 end
 
@@ -50,26 +51,24 @@ function dplyr_across_in_combines(df, da)
 
     if isnothing(da.outnames)
         pairs = [col => fn for col in input_cols, fn in da.fn]
-        return combine(df,  pairs...)
+        return combine(df, pairs...)
     else
         outcols = [
-            replace(
-                replace(da.outnames, "{col}" => col),
-                    "{fn}" => string(fn)
-                )
-            for col in input_cols, fn in keys(da.fn)]
+            replace(replace(da.outnames, "{col}" => col), "{fn}" => string(fn))
+            for col in input_cols, fn in keys(da.fn)
+        ]
 
         in_fn_out_iterator = zip(Iterators.product(input_cols, da.fn), outcols)
 
         pairs = [col => fn => outcol for ((col, fn), outcol) in in_fn_out_iterator]
 
-        return combine(df,  pairs...)
+        return combine(df, pairs...)
     end
 end
 
 DataFrames.combine(df, da::Across) = dplyr_across_in_combines(df, da)
 
-DataFrames.combine(df::T, da::Across) where T <: AbstractDataFrame =
+DataFrames.combine(df::T, da::Across) where {T<:AbstractDataFrame} =
     dplyr_across_in_combines(df, da)
 
 end

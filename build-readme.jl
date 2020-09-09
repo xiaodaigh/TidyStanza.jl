@@ -5,7 +5,7 @@ Pkg.activate("c:/git/Hadleyverse/readme-env")
 
 using Weave
 
-weave("README.jmd", out_path=:pwd, doctype="github")
+weave("README.jmd", out_path = :pwd, doctype = "github")
 
 if false
     tangle("README.jmd")

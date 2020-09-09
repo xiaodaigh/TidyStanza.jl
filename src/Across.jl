@@ -1,13 +1,13 @@
 struct Where
-    fn
+    fn::Any
 end
 
 where(args...; kwargs...) = Where(args...; kwargs...)
 
 struct Across
-    innames
-    fn
-    outnames
+    innames::Any
+    fn::Any
+    outnames::Any
 
     Across(innames, fn::AbstractVector; names = nothing) = new(innames, fn, names)
     Across(innames, fn::Tuple; names = nothing) = new(innames, fn, names)

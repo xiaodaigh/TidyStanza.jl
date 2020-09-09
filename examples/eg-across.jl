@@ -17,25 +17,24 @@ FloatingTableView.browse(iris)
 filter(startswith("Sepal"), names(iris))
 
 @pipe iris |>
-  groupby(_, :Species) |>
-  combine(_, filter(startswith("Sepal"), names(_)) .=> mean)
+      groupby(_, :Species) |>
+      combine(_, filter(startswith("Sepal"), names(_)) .=> mean)
 
 # R"""
 # iris %>%
-    # as_tibble() %>%
-    # mutate(across(where(is.factor), as.character))
+# as_tibble() %>%
+# mutate(across(where(is.factor), as.character))
 # """
 
 typeof.(eachcol(iris)) .<: CategoricalArray
-n = names(iris)[typeof.(eachcol(iris)) .<: CategoricalArray]
+n = names(iris)[typeof.(eachcol(iris)).<:CategoricalArray]
 
 catarr = categorical(["abc", "def", "abc"])
 
 Vector{String}(catarr)
 
 # you can use the `string` function to convert any type to string
-@pipe iris |>
-  transform(_, n .=> Vector{String} .=> n)
+@pipe iris |> transform(_, n .=> Vector{String} .=> n)
 
 # Will come back to this case at the end to show you how to simplify this!
 
@@ -45,8 +44,8 @@ Vector{String}(catarr)
 #   group_by(Species) %>%
 #   summarise(across(starts_with("Sepal"), ~mean(.x, na.rm = TRUE)))
 @pipe iris |>
-  groupby(_, :Species) |>
-  combine(_, filter(startswith("Sepal"), names(_)) .=> x->mean(x |> skipmissing) )
+      groupby(_, :Species) |>
+      combine(_, filter(startswith("Sepal"), names(_)) .=> x -> mean(x |> skipmissing))
 
 # A named list of functions
 # iris %>%
@@ -55,12 +54,16 @@ Vector{String}(catarr)
 
 # this doesn't work; because it is not a cartesian product
 @pipe iris |>
-  groupby(_, :Species) |>
-  combine(_, filter(startswith("Sepal"), names(iris)) .=> (mean, std))
+      groupby(_, :Species) |>
+      combine(_, filter(startswith("Sepal"), names(iris)) .=> (mean, std))
 
 @pipe iris |>
-    groupby(_, :Species) |>
-    combine(_, [name=>fn for name in filter(startswith("Sepal"), names(_)), fn in (mean, std)]...)
+      groupby(_, :Species) |>
+      combine(
+          _,
+          [name => fn for
+          name in filter(startswith("Sepal"), names(_)), fn in (mean, std)]...,
+      )
 
 
 function dplyr_across(names, fns)
@@ -68,13 +71,13 @@ function dplyr_across(names, fns)
 end
 
 @pipe iris |>
-    groupby(_, :Species) |>
-    combine(_, dplyr_across(filter(startswith("Sepal"), names(_)), (mean, std))...)
+      groupby(_, :Species) |>
+      combine(_, dplyr_across(filter(startswith("Sepal"), names(_)), (mean, std))...)
 
 struct DplyrAcross
-    innames
-    fn
-    outnames
+    innames::Any
+    fn::Any
+    outnames::Any
 end
 
 DplyrAcross(innames, fn) = DplyrAcross(innames, fn, nothing)
@@ -86,15 +89,15 @@ function DataFrames.combine(df, da::DplyrAcross)
 
     if isnothing(da.outnames)
         pairs = [col => fn for col in input_cols, fn in da.fn]
-        return combine(df,  pairs...)
+        return combine(df, pairs...)
     else
         error("not implemented yet")
     end
 end
 
 @pipe iris |>
-    groupby(_, :Species) |>
-    combine(_, DplyrAcross(startswith("Sepal"), (mean, std)))
+      groupby(_, :Species) |>
+      combine(_, DplyrAcross(startswith("Sepal"), (mean, std)))
 
 
 # Use the .names argument to control the output names
@@ -110,58 +113,69 @@ function DataFrames.combine(df, da::DplyrAcross)
 
     if isnothing(da.outnames)
         pairs = [col => fn for col in input_cols, fn in da.fn]
-        return combine(df,  pairs...)
+        return combine(df, pairs...)
     else
         outcols = [
-            replace(
-                replace(da.outnames, "{col}" => col),
-                "{fn}" => string(fn)
-            )
-             for col in input_cols, fn in keys(da.fn)]
+            replace(replace(da.outnames, "{col}" => col), "{fn}" => string(fn))
+            for col in input_cols, fn in keys(da.fn)
+        ]
 
         in_fn_out_iterator = zip(Iterators.product(input_cols, da.fn), outcols)
 
         pairs = [col => fn => outcol for ((col, fn), outcol) in in_fn_out_iterator]
 
-        return combine(df,  pairs...)
+        return combine(df, pairs...)
     end
 end
 
 @pipe iris |>
-    groupby(_, :Species) |>
-    combine(_, DplyrAcross(startswith("Sepal"), [mean]; names = "mean_{col}"))
+      groupby(_, :Species) |>
+      combine(_, DplyrAcross(startswith("Sepal"), [mean]; names = "mean_{col}"))
 
 # iris %>%
 #   group_by(Species) %>%
 #   summarise(across(starts_with("Sepal"), list(mean = mean, sd = sd), .names = "{col}.{fn}"))
 
 @pipe iris |>
-    groupby(_, :Species) |>
-    combine(_, DplyrAcross(startswith("Sepal"), (mean = mean, std = std); names = "{col}.{fn}"))
+      groupby(_, :Species) |>
+      combine(
+          _,
+          DplyrAcross(startswith("Sepal"), (mean = mean, std = std); names = "{col}.{fn}"),
+      )
 
 @pipe iris |>
-    groupby(_, :Species) |>
-    combine(_, DplyrAcross(startswith("Sepal"), (mean = mean, std = std); names = "{col}_{fn}"))
+      groupby(_, :Species) |>
+      combine(
+          _,
+          DplyrAcross(startswith("Sepal"), (mean = mean, std = std); names = "{col}_{fn}"),
+      )
 
 # iris %>%
 #   group_by(Species) %>%
 #   summarise(across(starts_with("Sepal"), list(mean, sd), .names = "{col}.fn{fn}"))
 
 @pipe iris |>
-    groupby(_, :Species) |>
-    combine(_, DplyrAcross(startswith("Sepal"), (mean, std); names = "{col}_fn{fn}"))
+      groupby(_, :Species) |>
+      combine(_, DplyrAcross(startswith("Sepal"), (mean, std); names = "{col}_fn{fn}"))
 
 
 using Dply
 
 @pipe iris |>
-    groupby(_, :Species) |>
-    combine(_, Dply.Across(startswith("Sepal"), (mean, std); names = "{col}_fn{fn}"))
+      groupby(_, :Species) |>
+      combine(_, Dply.Across(startswith("Sepal"), (mean, std); names = "{col}_fn{fn}"))
 
 
 @pipe iris |>
-    groupby(_, :Species) |>
-    combine(_, Dply.across(startswith("Sepal"), (mean = mean, std=std); names = "{col}_fn_{fn}"))
+      groupby(_, :Species) |>
+      combine(
+          _,
+          Dply.across(
+              startswith("Sepal"),
+              (mean = mean, std = std);
+              names = "{col}_fn_{fn}",
+          ),
+      )
 
 #######################################
 ## Do you recall this case we skipped?
@@ -169,37 +183,34 @@ using Dply
 
 # R"""
 # iris %>%
-    # as_tibble() %>%
-    # mutate(across(where(is.factor), as.character))
+# as_tibble() %>%
+# mutate(across(where(is.factor), as.character))
 # """
 
 typeof.(eachcol(iris)) .<: CategoricalArray
-n = names(iris)[typeof.(eachcol(iris)) .<: CategoricalArray]
+n = names(iris)[typeof.(eachcol(iris)).<:CategoricalArray]
 
-@pipe iris |>
-  transform(_, n .=> Vector{String} .=> n)
+@pipe iris |> transform(_, n .=> Vector{String} .=> n)
 
-@pipe iris |>
-  transform(_, n .=> (col->string.(col)) .=> n)
+@pipe iris |> transform(_, n .=> (col -> string.(col)) .=> n)
 
 
 using Dply
 
-@pipe iris |>
-  transform(_, Dply.across(Dply.Where(col -> typeof(col) <: CategoricalArray), Vector{String}))
+@pipe iris |> transform(
+    _,
+    Dply.across(Dply.Where(col -> typeof(col) <: CategoricalArray), Vector{String}),
+)
 
 
 # define a helper function
 iscatarray(col) = typeof(col) <: CategoricalArray
 
 
-@pipe iris |>
-  transform(_, Dply.across(Dply.Where(iscatarray), Vector{String}))
+@pipe iris |> transform(_, Dply.across(Dply.Where(iscatarray), Vector{String}))
 
 using Dply: across, where
 
-@pipe iris |>
-  transform(_, across(where(iscatarray), Vector{String}))
+@pipe iris |> transform(_, across(where(iscatarray), Vector{String}))
 
-@pipe iris |>
-  transform(_, across(where(iscatarray), col->string.(col)))
+@pipe iris |> transform(_, across(where(iscatarray), col -> string.(col)))
