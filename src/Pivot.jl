@@ -1,19 +1,8 @@
 """
-unstack_name(df::AbstractDataFrame, rowkeys, colkey, value)
-
-A helper function for unstack to name the columns being unstacked using the column name the values are present in.
-"""
-function unstack_name(df::AbstractDataFrame, rowkeys, colkey, value)
-    unstack(df::AbstractDataFrame, rowkeys, colkey, value, renamecols = x -> Symbol(string(value), "_", x))
-end
-
-
-
-"""
 pivot_wider(df::AbstractDataFrame; names_from =  names_cols, values_from = values_cols)
 
 A function to widen a data frame (e.g. unstack)  but in the frameowrk of dplyr.
-
+The reference page for the R function is [https://tidyr.tidyverse.org/reference/pivot_wider.html](https://tidyr.tidyverse.org/reference/pivot_wider.html)
 
 # Examples
 ```
@@ -55,17 +44,44 @@ pivot_wider(df, names_from = [:cname1,:cname2], values_from = [:val1,:val2])
 │ 3   │ 3     │ 6     │ 9     │ ce_val1_3 │ cf_val1_3 │ de_val1_3 │ df_val1_3 │ ce_val2_3 │ cf_val2_3 │ de_val2_3 │ df_val2_3 │
 """
 function pivot_wider(df::AbstractDataFrame; names_from = nothing, values_from = nothing)
- if names_from isa Symbol
+   # A lot of branching in this code. I do not know if multiple dispatch can be done here efficiently. Not enough knowledge with multiple dispatch.
+
+   # Checking if a single column is provided or an array of columns either symbols or strings
+   if (names_from isa Symbol) || (names_from isa String)
     names_from = [names_from]
- end
- if values_from isa Symbol
+   end
+   if (values_from isa Symbol) || (values_from isa String)
     values_from = [values_from]
- end
-    id_cols = setdiff(Symbol.(names(df)), names_from, values_from)
-    dfa = select(df, :)
-    dfa[!,:cname_temp] = [join(Array(r), "_") for r in eachrow(select(dfa, names_from))]
-    dfb = unstack_name.(Ref(dfa), Ref(id_cols), Ref(:cname_temp), values_from)
-    id1 = select(dfb[1], id_cols)
-    select!.(dfb, Ref(Not(id_cols)))
-    hcat(id1, reduce((df1, df2) -> hcat(df1, df2, makeunique = true), dfb))
+   end
+
+   ## Defining id_cols as all columns other than names and values columns
+   id_cols = setdiff(Symbol.(names(df)), names_from, values_from)
+   if names_from isa Array{String}
+      id_cols = setdiff(names(df), names_from, values_from)
+   end
+   
+   # Concatenating multiple name columns with "_" and creating a single name column cname_temp
+   # This may cause a bug if someone names their column cname_temp (Dont know how to work around this issue: creating a temporary column using it and then deleting it without conflicts)
+   df[!,:cname_temp] = [join(Array(r), "_") for r in eachrow(select(df, names_from))]
+   
+   # function to  unstack with column names added
+   unstack_name(df::AbstractDataFrame, rowkeys, colkey, value) = unstack(df::AbstractDataFrame, rowkeys, colkey, value, renamecols = x -> Symbol(string(value), "_", x))
+
+   # Broadcast unstacking on all value columns 
+   wide_dfs = unstack_name.(Ref(df), Ref(id_cols), Ref(:cname_temp), values_from)
+   
+   # remove created column cname_temp
+   select!(df, Not(:cname_temp))
+   
+   # check if there are multiple dataframes
+   if length(wide_dfs) >= 2
+      # remove all id columns for any other frame other than the first
+      select!.(wide_dfs[2:end], Ref(Not(id_cols)))
+      # concatenate all the dataframes horizontally
+      reduce((df1, df2) -> hcat(df1, df2, makeunique = true), wide_dfs)
+   else
+      wide_dfs[1]
+   end
 end
+
+

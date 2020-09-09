@@ -52,4 +52,7 @@ wider_df3 = DataFrame(
     @test pivot_wider(df, names_from = :cname1, values_from = [:val1,:val2]) == wider_df1
     @test isequal(pivot_wider(df, names_from = [:cname1, :cname2], values_from = :val1),wider_df2)
     @test pivot_wider(df, names_from = [:cname1,:cname2], values_from = [:val1,:val2]) == wider_df3
+    @test pivot_wider(df, names_from = "cname1", values_from = ["val1","val2"]) == wider_df1
+    @test isequal(pivot_wider(df, names_from = ["cname1", "cname2"], values_from = "val1"),wider_df2)
+    @test pivot_wider(df, names_from = ["cname1", "cname2"], values_from = ["val1","val2"]) == wider_df3
 end
