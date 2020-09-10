@@ -259,7 +259,7 @@ iscatarray(arr) = typeof(arr) <: CategoricalArray
 </details>
 
 <details>
-  <summary> Expand for  <b>pivot_wider</b> === <b>dplyr::pivot_wider</b></summary>
+<summary>Expand for  <b>pivot_wider</b> === <b>dplyr::pivot_wider</b></summary>
 
 ```julia
 df = DataFrame(x = repeat(1:3,inner = 2,outer = 2),
