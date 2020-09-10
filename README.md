@@ -7,7 +7,8 @@ Currently, part of `dplyr::across` and `tidyr::pivot_wider` are implemented
 ### Examples:
 
 <details>
-<summary>Expand for `Hadleyverse.across` === `dplyr::across`</summary>
+  <summary>Expand for <b>Hadleyverse.across</b> === <b>dplyr::across</b></summary>
+  
 #### `Hadleyverse.Across` and `Hadleyverse.Where` (for `dplyr::across`)
 
 * `Hadleyverse.Across` and `Hadleyverse.across` are synonyms and have the same API as `dplyr::across`
