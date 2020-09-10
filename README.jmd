@@ -6,6 +6,8 @@ Currently, only `dplyr::across` is implemented
 
 ### Examples:
 
+<details>
+<summary>Expand for <b>across</b> === <b>dplyr::across</b></summary>
 #### `Hadleyverse.Across` and `Hadleyverse.Where`
 
 * `Hadleyverse.Across` and `Hadleyverse.across` are synonyms and have the same API as `dplyr::across`
@@ -123,3 +125,27 @@ iscatarray(arr) = typeof(arr) <: CategoricalArray
     groupby(_, :Species) |>
     combine(_, across(startswith("Sepal"), (mean, std); names = "{col}_fn{fn}"))
 ```
+</details>
+
+<details>
+<summary>Expand for <b>pivot_wider</b> === <b>dplyr::pivot_wider</b></summary>
+
+```julia
+df = DataFrame(x = repeat(1:3,inner = 2,outer = 2),
+       a = repeat(4:6,inner = 2,outer = 2),
+       b = repeat(7:9,inner = 2,outer = 2),
+       val1 = ["ce_val1_1","cf_val1_1","ce_val1_2","cf_val1_2","ce_val1_3","cf_val1_3","de_val1_1",
+               "df_val1_1","de_val1_2","df_val1_2","de_val1_3","df_val1_3"],
+       val2 = ["ce_val2_1","cf_val2_1","ce_val2_2","cf_val2_2","ce_val2_3","cf_val2_3","de_val2_1",
+               "df_val2_1","de_val2_2","df_val2_2","de_val2_3","df_val2_3"],
+       cname1 = repeat(["c", "d"], inner = 6),
+       cname2 = repeat(["e", "f"], 6)
+       )
+```
+
+```julia
+using Hadleyverse: pivot_wider
+pivot_wider(df; names_from = [:cname1, :cname2], values_from = [:val1, :val2])
+```
+
+</details>

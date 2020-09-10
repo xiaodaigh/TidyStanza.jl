@@ -2,14 +2,13 @@
 
 Trying to implement {tidyverse}, including {dplyr}, APIs in Julia
 
-Currently, part of `dplyr::across` and `tidyr::pivot_wider` are implemented
+Currently, only `dplyr::across` is implemented
 
 ### Examples:
 
 <details>
-  <summary>Expand for <b>Hadleyverse.across</b> === <b>dplyr::across</b></summary>
-  
-#### `Hadleyverse.Across` and `Hadleyverse.Where` (for `dplyr::across`)
+<summary>Expand for <b>across</b> === <b>dplyr::across</b></summary>
+#### `Hadleyverse.Across` and `Hadleyverse.Where`
 
 * `Hadleyverse.Across` and `Hadleyverse.across` are synonyms and have the same API as `dplyr::across`
 * `Hadleyverse.Where` and `Hadleyverse.where` are synonyms and have the same API as `dplyr::across(where(...), ...)`
@@ -256,12 +255,17 @@ iscatarray(arr) = typeof(arr) <: CategoricalArray
 │ 2   │ versicolor │ 5.936           │ 2.77           │ 0.516171        │
 │ 3   │ virginica  │ 6.588           │ 2.974          │ 0.63588         │
 ````
+
+
+
+
 </details>
 
 <details>
-<summary>Expand for  <b>pivot_wider</b> === <b>dplyr::pivot_wider</b></summary>
+<summary>Expand for <b>pivot_wider</b> === <b>dplyr::pivot_wider</b></summary>
 
-```julia
+````julia
+
 df = DataFrame(x = repeat(1:3,inner = 2,outer = 2),
        a = repeat(4:6,inner = 2,outer = 2),
        b = repeat(7:9,inner = 2,outer = 2),
@@ -272,9 +276,10 @@ df = DataFrame(x = repeat(1:3,inner = 2,outer = 2),
        cname1 = repeat(["c", "d"], inner = 6),
        cname2 = repeat(["e", "f"], 6)
        )
-```
+````
 
-```
+
+````
 12×7 DataFrame
 │ Row │ x     │ a     │ b     │ val1      │ val2      │ cname1 │ cname2 │
 │     │ Int64 │ Int64 │ Int64 │ String    │ String    │ String │ String │
@@ -291,21 +296,35 @@ df = DataFrame(x = repeat(1:3,inner = 2,outer = 2),
 │ 10  │ 2     │ 5     │ 8     │ df_val1_2 │ df_val2_2 │ d      │ f      │
 │ 11  │ 3     │ 6     │ 9     │ de_val1_3 │ de_val2_3 │ d      │ e      │
 │ 12  │ 3     │ 6     │ 9     │ df_val1_3 │ df_val2_3 │ d      │ f      │
-```
+````
 
 
-```julia
-pivot_wider(df; names_from = [:cname1,:cname2], values_from = [:val1,:val2])
-```
 
-```
-3×11 DataFrame
-│ Row │ x     │ a     │ b     │ val1_c_e  │ val1_c_f  │ val1_d_e  │ val1_d_f  │ val2_c_e  │ val2_c_f  │ val2_d_e  │ val2_d_f  │
-│     │ Int64 │ Int64 │ Int64 │ String?   │ String?   │ String?   │ String?   │ String?   │ String?   │ String?   │ String?   │
-├─────┼───────┼───────┼───────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ 1   │ 1     │ 4     │ 7     │ ce_val1_1 │ cf_val1_1 │ de_val1_1 │ df_val1_1 │ ce_val2_1 │ cf_val2_1 │ de_val2_1 │ df_val2_1 │
-│ 2   │ 2     │ 5     │ 8     │ ce_val1_2 │ cf_val1_2 │ de_val1_2 │ df_val1_2 │ ce_val2_2 │ cf_val2_2 │ de_val2_2 │ df_val2_2 │
-│ 3   │ 3     │ 6     │ 9     │ ce_val1_3 │ cf_val1_3 │ de_val1_3 │ df_val1_3 │ ce_val2_3 │ cf_val2_3 │ de_val2_3 │ df_val2_3 │
-```
+````julia
+
+using Hadleyverse: pivot_wider
+pivot_wider(df; names_from = [:cname1, :cname2], values_from = [:val1, :val2])
+````
+
+
+````
+3×11 DataFrame. Omitted printing of 4 columns
+│ Row │ x     │ a     │ b     │ val1_c_e  │ val1_c_f  │ val1_d_e  │ val1_d_
+f  │
+│     │ Int64 │ Int64 │ Int64 │ String?   │ String?   │ String?   │ String?
+   │
+├─────┼───────┼───────┼───────┼───────────┼───────────┼───────────┼────────
+───┤
+│ 1   │ 1     │ 4     │ 7     │ ce_val1_1 │ cf_val1_1 │ de_val1_1 │ df_val1
+_1 │
+│ 2   │ 2     │ 5     │ 8     │ ce_val1_2 │ cf_val1_2 │ de_val1_2 │ df_val1
+_2 │
+│ 3   │ 3     │ 6     │ 9     │ ce_val1_3 │ cf_val1_3 │ de_val1_3 │ df_val1
+_3 │
+````
+
+
+
+
 
 </details>
