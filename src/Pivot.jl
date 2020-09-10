@@ -35,7 +35,7 @@ df = DataFrame(x = repeat(1:3,inner = 2,outer = 2),
 │ 12  │ 3     │ 6     │ 9     │ df_val1_3 │ df_val2_3 │ d      │ f      │
 
 ```
-pivot_wider(df, names_from = [:cname1,:cname2], values_from = [:val1,:val2])
+pivot_wider(df; names_from = [:cname1,:cname2], values_from = [:val1,:val2])
 ```
 3×11 DataFrame
 │ Row │ x     │ a     │ b     │ val1_c_e  │ val1_c_f  │ val1_d_e  │ val1_d_f  │ val2_c_e  │ val2_c_f  │ val2_d_e  │ val2_d_f  │
