@@ -1,7 +1,7 @@
 """
     pivot_wider(df::AbstractDataFrame; names_from =  names_cols, values_from = values_cols)
 
-A function to widen a data frame (e.g. unstack)  but in the frameowrk of dplyr.
+A function to widen a data frame (i.e. unstack)  but in the framework of dplyr.
 The reference page for the R function is [https://tidyr.tidyverse.org/reference/pivot_wider.html](https://tidyr.tidyverse.org/reference/pivot_wider.html)
 
 # Examples
