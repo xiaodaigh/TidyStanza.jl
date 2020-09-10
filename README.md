@@ -6,10 +6,9 @@ Currently, only `dplyr::across` is implemented
 
 ### Examples:
 
-<details>
-<summary>Expand for <b>across</b> === <b>dplyr::across</b></summary>
 #### `Hadleyverse.Across` and `Hadleyverse.Where`
 
+<details>
 * `Hadleyverse.Across` and `Hadleyverse.across` are synonyms and have the same API as `dplyr::across`
 * `Hadleyverse.Where` and `Hadleyverse.where` are synonyms and have the same API as `dplyr::across(where(...), ...)`
 
@@ -261,9 +260,9 @@ iscatarray(arr) = typeof(arr) <: CategoricalArray
 
 </details>
 
-<details>
-<summary>Expand for <b>pivot_wider</b> === <b>dplyr::pivot_wider</b></summary>
+### `pivot_wider`
 
+<details>
 ````julia
 
 df = DataFrame(x = repeat(1:3,inner = 2,outer = 2),
