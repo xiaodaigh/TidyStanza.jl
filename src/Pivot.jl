@@ -100,7 +100,7 @@ function pivot_wider(df::AbstractDataFrame, names_from, values_from)
         # remove all id columns for any other frame other than the first
         select!.(@view(wide_dfs[2:end]), Ref(Not(id_cols)))
         # concatenate all the dataframes horizontally
-        reduce((df1, df2) -> hcat(df1, df2, makeunique = true), wide_dfs)
+        hcat(wide_dfs..., makeunique = true)
     else
         wide_dfs[1]
     end
