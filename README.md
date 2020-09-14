@@ -1,4 +1,4 @@
-## Hadleyverse
+## Dirtyverse
 
 Trying to implement {tidyverse}, including {dplyr}, APIs in Julia
 
@@ -6,20 +6,20 @@ Currently, only `dplyr::across` is implemented
 
 ### Examples:
 
-#### `Hadleyverse.Across` and `Hadleyverse.Where`
+#### `Dirtyverse.Across` and `Dirtyverse.Where`
 
 <details>
 
-* `Hadleyverse.Across` and `Hadleyverse.across` are synonyms and have the same API as `dplyr::across`
-* `Hadleyverse.Where` and `Hadleyverse.where` are synonyms and have the same API as `dplyr::across(where(...), ...)`
+* `Dirtyverse.Across` and `Dirtyverse.across` are synonyms and have the same API as `dplyr::across`
+* `Dirtyverse.Where` and `Dirtyverse.where` are synonyms and have the same API as `dplyr::across(where(...), ...)`
 
-By default, they are NOT exported, and the recommended way is to use `Hadleyverse.across` and `Hadleyverse.where`
+By default, they are NOT exported, and the recommended way is to use `Dirtyverse.across` and `Dirtyverse.where`
 to refer to them.
 
 ````julia
 
-import Hadleyverse
-const hv = Hadleyverse
+import Dirtyverse
+const hv = Dirtyverse
 
 hv.across
 hv.where
@@ -39,7 +39,7 @@ directly into the namespace.
 
 ````julia
 
-using Hadleyverse: across, where
+using Dirtyverse: across, where
 
 
 ### load some helper packages
@@ -303,7 +303,7 @@ df = DataFrame(x = repeat(1:3,inner = 2,outer = 2),
 
 ````julia
 
-using Hadleyverse: pivot_wider
+using Dirtyverse: pivot_wider
 pivot_wider(df; names_from = [:cname1, :cname2], values_from = [:val1, :val2])
 ````
 
