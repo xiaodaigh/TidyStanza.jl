@@ -332,6 +332,8 @@ _3 │
 
 #### `relocate` - for relocating columns
 
+This is for relocating columns and implements a replica of [`dplyr::relocate`](https://dplyr.tidyverse.org/reference/relocate.html)
+
 <details>
 
 ```

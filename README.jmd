@@ -153,6 +153,8 @@ pivot_wider(df; names_from = [:cname1, :cname2], values_from = [:val1, :val2])
 
 #### `relocate` - for relocating columns
 
+This is for relocating columns and implements a replica of [`dplyr::relocate`](https://dplyr.tidyverse.org/reference/relocate.html)
+
 <details>
 
 ```
