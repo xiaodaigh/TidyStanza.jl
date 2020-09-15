@@ -1,0 +1,1 @@
+any_of(cols::AbstractVector{T}) where T = df -> intersect(T.(names(df)), cols)

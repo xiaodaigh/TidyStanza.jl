@@ -1,0 +1,1 @@
+last_col() = df->names(df)[end]

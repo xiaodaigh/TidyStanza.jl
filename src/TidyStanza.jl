@@ -2,6 +2,8 @@ module TidyStanza
 
 export combine, pivot_wider
 
+include("relocate.jl")
+
 include("Across.jl") # defines the Across type
 
 using DataFrames
