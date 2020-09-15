@@ -1,4 +1,4 @@
-## Dirtyverse
+## TidyStanza
 
 Trying to implement {tidyverse}, including {dplyr}, APIs in Julia
 
@@ -150,3 +150,6 @@ pivot_wider(df; names_from = [:cname1, :cname2], values_from = [:val1, :val2])
 ```
 
 </details>
+
+## Why Stanza?
+The verse in tidyverse is referring to the universe, but "verse" is a [technical term in poetry](https://en.wikipedia.org/wiki/Verse_(poetry)), so is [stanza](https://en.wikipedia.org/wiki/Stanza).
