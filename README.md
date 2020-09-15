@@ -1,4 +1,4 @@
-## Dirtyverse
+## TidyStanza
 
 Trying to implement {tidyverse}, including {dplyr}, APIs in Julia
 
@@ -6,23 +6,23 @@ Currently, only `dplyr::across` is implemented
 
 ### Examples:
 
-#### `Dirtyverse.Across` and `Dirtyverse.Where`
+#### `TidyStanza.Across` and `TidyStanza.Where`
 
 <details>
 
-* `Dirtyverse.Across` and `Dirtyverse.across` are synonyms and have the same API as `dplyr::across`
-* `Dirtyverse.Where` and `Dirtyverse.where` are synonyms and have the same API as `dplyr::across(where(...), ...)`
+* `TidyStanza.Across` and `TidyStanza.across` are synonyms and have the same API as `dplyr::across`
+* `TidyStanza.Where` and `TidyStanza.where` are synonyms and have the same API as `dplyr::across(where(...), ...)`
 
-By default, they are NOT exported, and the recommended way is to use `Dirtyverse.across` and `Dirtyverse.where`
+By default, they are NOT exported, and the recommended way is to use `TidyStanza.across` and `TidyStanza.where`
 to refer to them.
 
 ````julia
 
-import Dirtyverse
-const hv = Dirtyverse
+import TidyStanza
+const dv = TidyStanza
 
-hv.across
-hv.where
+dv.across
+dv.where
 ````
 
 
@@ -39,7 +39,7 @@ directly into the namespace.
 
 ````julia
 
-using Dirtyverse: across, where
+using TidyStanza: across, where
 
 
 ### load some helper packages
@@ -303,7 +303,7 @@ df = DataFrame(x = repeat(1:3,inner = 2,outer = 2),
 
 ````julia
 
-using Dirtyverse: pivot_wider
+using TidyStanza: pivot_wider
 pivot_wider(df; names_from = [:cname1, :cname2], values_from = [:val1, :val2])
 ````
 
@@ -329,3 +329,6 @@ _3 │
 
 
 </details>
+
+## Why Stanza?
+The verse in tidyverse is referring to the universe, but "verse" is a [technical term in poetry](https://en.wikipedia.org/wiki/Verse_(poetry)), so is [stanza](https://en.wikipedia.org/wiki/Stanza).
