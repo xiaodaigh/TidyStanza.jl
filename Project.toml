@@ -1,7 +1,7 @@
 name = "TidyStanza"
 uuid = "b2c96470-cb50-47b8-9d8d-45534fe4e5bb"
 authors = ["Dai ZJ <zhuojia.dai@gmail.com> and contributors"]
-version = "0.1.2"
+version = "0.1.0"
 
 [deps]
 DataConvenience = "3b531cbf-ee43-4e67-8118-dca2c9372f86"
