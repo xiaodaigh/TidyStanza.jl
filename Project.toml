@@ -1,13 +1,15 @@
 name = "TidyStanza"
-uuid = "d4083892-cce6-48ab-a9ff-eaff78e11314"
+uuid = "b2c96470-cb50-47b8-9d8d-45534fe4e5bb"
 authors = ["Dai ZJ <zhuojia.dai@gmail.com> and contributors"]
 version = "0.1.2"
 
 [deps]
+DataConvenience = "3b531cbf-ee43-4e67-8118-dca2c9372f86"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 
 [compat]
 DataFrames = "0.21"
+DataConvenience = "0.1"
 julia = "1"
 
 [extras]
