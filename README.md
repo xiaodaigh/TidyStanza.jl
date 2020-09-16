@@ -2,7 +2,7 @@
 
 Trying to implement {tidyverse}, including {dplyr}, APIs in Julia
 
-Currently, only `dplyr::across` is implemented
+
 
 ### Examples:
 
