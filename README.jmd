@@ -1,10 +1,10 @@
 ## TidyStanza
 
-Trying to implement {tidyverse}, including {dplyr}, APIs in Julia
+Trying to implement {tidyverse}, including {dplyr}, APIs in Julia. This is not intended to be a sustained effort and is meant to be a fun exercism in trying to learn {tidyverse} and to teach Julia programming. So prolonged maintainence are purely accidental!
 
 ### Examples:
 
-#### `TidyStanza.Across` and `TidyStanza.Where`
+#### `across` and `where`
 
 <details>
 
@@ -16,10 +16,10 @@ to refer to them.
 
 ```julia
 import TidyStanza
-const dv = TidyStanza
+const tidy = TidyStanza
 
-dv.across
-dv.where
+tidy.across
+tidy.where
 ```
 
 However, in the examples below, for brevity, I have imported `across` and `where`
