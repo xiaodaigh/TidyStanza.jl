@@ -48,13 +48,26 @@ wider_df3 = DataFrame(
     val2_d_f = ["df_val2_1", "df_val2_2", "df_val2_3"]
 )
 
-@testset "Hadleyverse.jl" begin
-    # Write your tests here.
 
+df_noid = DataFrame(t = [:a, :b, :c, :a, :b, :c], x = 1:6, y = 11:16)
+df_noid_res = DataFrame(
+    x_a = [1 , missing, missing, 4, missing, missing],
+    x_b = [missing, 2, missing, missing, 5, missing],
+    x_c = [missing, missing, 3, missing, missing, 6],
+    y_a = [11 , missing, missing, 14, missing, missing],
+    y_b = [missing, 12, missing, missing, 15, missing],
+    y_c = [missing, missing, 13, missing, missing, 16],
+)
+
+@testset "TidyStanza.jl" begin
+    # Write your tests here.
     @test pivot_wider(df, names_from = :cname1, values_from = [:val1,:val2]) == wider_df1
     @test isequal(pivot_wider(df, names_from = [:cname1, :cname2], values_from = :val1),wider_df2)
     @test pivot_wider(df, names_from = [:cname1,:cname2], values_from = [:val1,:val2]) == wider_df3
     @test pivot_wider(df, names_from = "cname1", values_from = ["val1","val2"]) == wider_df1
     @test isequal(pivot_wider(df, names_from = ["cname1", "cname2"], values_from = "val1"),wider_df2)
     @test pivot_wider(df, names_from = ["cname1", "cname2"], values_from = ["val1","val2"]) == wider_df3
+    @test isequal(pivot_wider(df_noid, names_from = [:t], values_from = [:x, :y]), df_noid_res)
 end
+
+
