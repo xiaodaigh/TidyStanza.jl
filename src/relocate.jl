@@ -1,4 +1,4 @@
-export relocate
+export relocate, relocate!
 
 relocate(df, args...; kwargs...) = relocate!(copy(df), args...; kwargs...)
 
@@ -22,16 +22,23 @@ function relocate!(df, cols...; before = nothing, after = nothing)
     elseif isnothing(before) && isnothing(after)
         select!(df, cols..., :)
     elseif !isnothing(before)
-        if before isa Where
+        if before isa Function
+            before_idx = columnindex(df, before(df))
+        elseif before isa Where
             tmp = [before.fn(col) for col in eachcol(df)]
             where_cols = names(df)[tmp]
             before_idx = columnindex.(Ref(df), where_cols) |> minimum
-        else
+        elseif before isa Symbol || before isa AbstractString
             before_idx = columnindex(df, before)
         end
 
-        cols_idx = columnindex.(Ref(df), cols)
-        select!(df, setdiff(1:before_idx-1, cols_idx), cols..., before_idx, :)
+        if cols isa Symbol || cols isa AbstractString
+            cols_idx = columnindex(df, cols)
+        else
+            cols_names = reduce(vcat, names.(Ref(df), cols))
+            cols_idx = columnindex.(Ref(df), cols_names)
+        end
+        select!(df, setdiff(1:before_idx-1, cols_idx), cols_idx, before_idx, :)
     elseif !isnothing(after)
         if after isa Function
             after_idx = columnindex(df, after(df))
@@ -39,12 +46,18 @@ function relocate!(df, cols...; before = nothing, after = nothing)
             tmp = [after.fn(col) for col in eachcol(df)]
             where_cols = names(df)[tmp]
             after_idx = columnindex.(Ref(df), where_cols) |> maximum
-        else
+        elseif after isa Symbol || after isa AbstractString
             after_idx = columnindex(df, after)
         end
-        cols_idx = columnindex.(Ref(df), cols)
 
-        select!(df, setdiff(1:after_idx, cols_idx), cols..., :)
+        if cols isa Symbol || cols isa AbstractString
+            cols_idx = columnindex(df, cols)
+        else
+            cols_names = reduce(vcat, names.(Ref(df), cols))
+            cols_idx = columnindex.(Ref(df), cols_names)
+        end
+
+        select!(df, setdiff(1:after_idx, cols_idx), cols_idx, :)
     end
 end
 
