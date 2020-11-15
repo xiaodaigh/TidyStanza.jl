@@ -48,13 +48,17 @@ wider_df3 = DataFrame(
     val2_d_f = ["df_val2_1", "df_val2_2", "df_val2_3"]
 )
 
-@testset "Hadleyverse.jl" begin
+@testset "Tidyverse.jl" begin
     # Write your tests here.
 
     @test pivot_wider(df, names_from = :cname1, values_from = [:val1,:val2]) == wider_df1
-    @test isequal(pivot_wider(df, names_from = [:cname1, :cname2], values_from = :val1),wider_df2)
+    tmp1 = pivot_wider(df, names_from = [:cname1, :cname2], values_from = :val1)
+    sort!(tmp1, [:x, :a, :b, :val2])
+    @test isequal(tmp1, wider_df2)
     @test pivot_wider(df, names_from = [:cname1,:cname2], values_from = [:val1,:val2]) == wider_df3
     @test pivot_wider(df, names_from = "cname1", values_from = ["val1","val2"]) == wider_df1
-    @test isequal(pivot_wider(df, names_from = ["cname1", "cname2"], values_from = "val1"),wider_df2)
+    tmp2 = pivot_wider(df, names_from = ["cname1", "cname2"], values_from = "val1")
+    sort!(tmp2, [:x, :a, :b, :val2])
+    @test isequal(tmp2, wider_df2)
     @test pivot_wider(df, names_from = ["cname1", "cname2"], values_from = ["val1","val2"]) == wider_df3
 end
