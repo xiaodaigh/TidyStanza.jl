@@ -54,6 +54,7 @@ first(iris, 8)
 ```
 
 ```julia
+using CategoricalArrays: CategoricalArray
 # R"""
 # iris %>%
     # as_tibble() %>%

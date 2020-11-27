@@ -2,6 +2,8 @@
 using Pkg
 cd("c:/git/TidyStanza/")
 Pkg.activate("c:/git/TidyStanza/readme-env")
+Pkg.update()
+upcheck()
 
 using Weave
 
