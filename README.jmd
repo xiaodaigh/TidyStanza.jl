@@ -32,7 +32,7 @@ using TidyStanza: across, where
 ### load some helper packages
 using DataFrames
 using Statistics # for using mean
-using Pipe: @pipe # for @pipe macro
+using Chain: @chain # for @pipe macro
 using RDatasets # for iris dataset
 
 iris = dataset("datasets", "iris");
@@ -48,9 +48,10 @@ first(iris, 8)
 #   summarise(across(starts_with("Sepal"), mean))
 # """
 
-@pipe iris |>
-  groupby(_, :Species) |>
-  combine(_, across(startswith("Sepal"), mean))
+@chain iris begin
+  groupby(:Species)
+  combine(across(startswith("Sepal"), mean))
+ end
 ```
 
 ```julia
@@ -64,13 +65,15 @@ using CategoricalArrays: CategoricalArray
 # define a convenience function for checking if column is categorical
 iscatarray(arr) = typeof(arr) <: CategoricalArray
 
-@pipe iris |>
-  transform(_, across(where(iscatarray), Vector{String})) |>
-  first(_, 8)
+@chain iris begin
+  transform(across(where(iscatarray), Vector{String}))  
+  first(8)
+ end
 
-@pipe iris |>
-  transform(_, across(where(iscatarray), col->string.(col))) |>
-  first(_, 8)
+@chain iris begin
+  transform(across(where(iscatarray), col->string.(col)))
+  first(8)
+end
 ```
 
 ```julia
@@ -78,9 +81,10 @@ iscatarray(arr) = typeof(arr) <: CategoricalArray
 # iris %>%
 #   group_by(Species) %>%
 #   summarise(across(starts_with("Sepal"), ~mean(.x, na.rm = TRUE)))
-@pipe iris |>
-  groupby(_, :Species) |>
-  combine(_, across(startswith("Sepal"), x->mean(x |> skipmissing)))
+@chain iris begin
+  groupby(:Species)
+  combine(across(startswith("Sepal"), x->mean(x |> skipmissing)))
+end
 ```
 
 ```julia
@@ -89,9 +93,10 @@ iscatarray(arr) = typeof(arr) <: CategoricalArray
 #   group_by(Species) %>%
 #   summarise(across(starts_with("Sepal"), list(mean = mean, sd = sd)))
 
-@pipe iris |>
-    groupby(_, :Species) |>
-    combine(_, across(startswith("Sepal"), (mean, std)))
+@chain iris begin
+    groupby(:Species)
+    combine(across(startswith("Sepal"), (mean, std)))
+end
 ```
 
 ```julia
@@ -100,9 +105,10 @@ iscatarray(arr) = typeof(arr) <: CategoricalArray
 #   group_by(Species) %>%
 #   summarise(across(starts_with("Sepal"), mean, .names = "mean_{col}"))
 
-@pipe iris |>
-    groupby(_, :Species) |>
-    combine(_, across(startswith("Sepal"), mean; names = "mean_{col}"))
+@chain iris begin
+    groupby(:Species) |>
+    combine(across(startswith("Sepal"), mean; names = "mean_{col}"))
+end
 ```
 
 ```julia
@@ -110,9 +116,10 @@ iscatarray(arr) = typeof(arr) <: CategoricalArray
 #   group_by(Species) %>%
 #   summarise(across(starts_with("Sepal"), list(mean = mean, sd = sd), .names = "{col}_{fn}"))
 
-@pipe iris |>
-    groupby(_, :Species) |>
-    combine(_, across(startswith("Sepal"), (mean = mean, std = std); names = "{col}_{fn}"))
+@chain iris begin
+    groupby(:Species)
+    combine(across(startswith("Sepal"), (mean = mean, std = std); names = "{col}_{fn}"))
+end
 ```
 
 ```julia
@@ -120,9 +127,10 @@ iscatarray(arr) = typeof(arr) <: CategoricalArray
 #   group_by(Species) %>%
 #   summarise(across(starts_with("Sepal"), list(mean, sd), .names = "{col}.fn{fn}"))
 
-@pipe iris |>
-    groupby(_, :Species) |>
-    combine(_, across(startswith("Sepal"), (mean, std); names = "{col}_fn{fn}"))
+@chain iris begin
+    groupby(:Species)
+    combine(across(startswith("Sepal"), (mean, std); names = "{col}_fn{fn}"))
+end
 ```
 </details>
 
@@ -158,7 +166,7 @@ This is for relocating columns and implements a replica of [`dplyr::relocate`](h
 
 ```
 using DataFrames
-using DataConvenience: @>
+using Chain: @chain
 using TidyStanza: relocate, any_of, last_col
 
 # df <- tibble(a = 1, b = 1, c = 1, d = "a", e = "a", f = "a")
@@ -168,31 +176,31 @@ df = DataFrame(a = 1, b = 1, c = 1, d = "a", e = "a", f = "a")
 
 ```
 # df %>% relocate(f)
-@> df relocate(:f)
+@chain df relocate(:f)
 ```
 
 ```
 # df %>% relocate(a, .after = c)
-@> df relocate(:a, after = :c)
+@chain df relocate(:a, after = :c)
 ```
 
 ```
 # df %>% relocate(f, .before = b)
-@> df relocate(:f, before = :b)
+@chain df relocate(:f, before = :b)
 ```
 
 ```
 # df %>% relocate(a, .after = last_col())
-@> df relocate(:a, after = names(df)[end])
+@chain df relocate(:a, after = names(df)[end])
 ```
 
 ```
-@> df relocate(:a, after = last_col())
+@chain df relocate(:a, after = last_col())
 ```
 
 ```
 middle_col() = df->names(df)[end ÷ 2]
-@> df relocate(:a, after = middle_col())
+@chain df relocate(:a, after = middle_col())
 ```
 
 ```
@@ -201,12 +209,12 @@ using TidyStanza: where
 # df %>% relocate(where(is.character))
 isstring(x) = eltype(x) <: AbstractString
 
-@> df relocate(where(isstring))
+@chain df relocate(where(isstring))
 ```
 
 
 ```
-@> df relocate(where(x->eltype(x) <: AbstractString))
+@chain df relocate(where(x->eltype(x) <: AbstractString))
 ```
 
 
@@ -214,16 +222,16 @@ isstring(x) = eltype(x) <: AbstractString
 # df %>% relocate(where(is.numeric), .after = last_col())
 isnumeric(x) = eltype(x) <: Number
 
-@> df relocate(where(isnumeric), after = last_col())
+@chain df relocate(where(isnumeric), after = last_col())
 ```
 
 ```
 # df %>% relocate(any_of(c("a", "e", "i", "o", "u")))
-@> df relocate(intersect(["a", "e", "i", "o", "u"], names(df)))
+@chain df relocate(intersect(["a", "e", "i", "o", "u"], names(df)))
 ```
 
 ```
-@> df relocate(any_of(["a", "e", "i", "o", "u"]))
+@chain df relocate(any_of(["a", "e", "i", "o", "u"]))
 ```
 
 ```
