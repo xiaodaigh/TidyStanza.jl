@@ -15,6 +15,7 @@ By default, they are NOT exported, and the recommended way is to use `TidyStanza
 to refer to them.
 
 ```julia
+# from 1.6 import TidayStanza as tidy
 import TidyStanza
 const tidy = TidyStanza
 
