@@ -1,6 +1,6 @@
 ## TidyStanza
 
-Trying to implement {tidyverse}, including {dplyr}, APIs in Julia. This is not intended to be a sustained effort and is meant to be a fun exercism in trying to learn {tidyverse} and to teach Julia programming. So prolonged maintainence are purely accidental!
+I am trying to implement {tidyverse}, including {dplyr}, APIs in Julia. This is not intended to be a sustained effort and is meant to be a fun exercise to learn {tidyverse} and teach Julia programming. So prolonged maintenance is purely accidental!
 
 ### Examples:
 
